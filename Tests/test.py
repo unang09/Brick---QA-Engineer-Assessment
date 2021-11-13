@@ -4,6 +4,7 @@ import string
 import html
 import HtmlTestRunner
 
+from random import randint
 from selenium import webdriver
 
 class BrickDashboard(unittest.TestCase):
@@ -15,20 +16,39 @@ class BrickDashboard(unittest.TestCase):
     # declare variable to store search term. This variable can be stored to another file, but for now, this should work.
     signup_first_name="Test"
     signup_last_name="Michael"
-    signup_email_address="test20qa@gmail.com"
-    signup_phone_number="82218777879"
     signup_address="Rockbottom"
-    signup_password="Test1234"
-    signup_confirm_password="Test1234"
     login_email="indomie.telur09@gmail.com"
     login_password="Unang1234"
     
     # --- Pre Condition ---
     def setUp(self):
-        self.driver = webdriver.Chrome(executable_path="D:\Automation\OneBrick\webdriver\chromedriver.exe") # please change this exec path following your own folder path
+        self.driver = webdriver.Chrome(executable_path="D:\Automation\Brick---QA-Engineer-Assessment\webdriver\chromedriver.exe") # please change this exec path following your own folder path
         self.driver.maximize_window()
         self.driver.implicitly_wait(10)
 
+    def email_randomizer(self, length=10, char = string.ascii_lowercase):
+        return ''.join(random.choice(char) for i in range(length))
+    
+    def password_randomizer(self, length=8):
+        lower = string.ascii_lowercase
+        upper = string.ascii_uppercase
+        num = string.digits
+        symbols = string.punctuation
+        
+        all = lower + upper + num + symbols
+        temp = random.sample(all,length)
+        a = "".join(temp)
+        return '{}'.format(a)
+    
+    def phone_number_randomizer(self):
+        first = str(random.randint(1,99))
+        second = str(random.randint(1, 9998)).zfill(4)
+        third = (str(random.randint(1, 9998)).zfill(4))
+        while third in ['1111','2222','3333','4444','5555','6666', '7777', '8888']:
+            third = (str(random.randint(1, 9998)).zfill(4))
+        
+        return '{}{}{}'.format(first, second, third)
+    
     # --- Steps ---
     def test_register_account(self):
         driver=self.driver
@@ -42,19 +62,19 @@ class BrickDashboard(unittest.TestCase):
         lastname_field.send_keys(self.signup_last_name)
         
         email_field = self.driver.find_element_by_id('email')
-        email_field.send_keys(self.signup_email_address)
+        email_field.send_keys(self.email_randomizer(),'@gmail.com')
         
         phone_field = self.driver.find_element_by_id('phoneNumber')
-        phone_field.send_keys(self.signup_phone_number)
+        phone_field.send_keys(self.phone_number_randomizer())
         
         address_field = self.driver.find_element_by_id('address')
         address_field.send_keys(self.signup_address)
         
         password_field = self.driver.find_element_by_id('password')
-        password_field.send_keys(self.signup_password)
+        password_field.send_keys(self.password_randomizer())
         
         confirm_password_field = self.driver.find_element_by_id('confirm_password')
-        confirm_password_field.send_keys(self.signup_confirm_password)
+        confirm_password_field.send_keys(self.password_randomizer())
         
         register_button = self.driver.find_element_by_css_selector('#myform > div.form-row-last > input')
         register_button.click()
@@ -79,7 +99,7 @@ class BrickDashboard(unittest.TestCase):
         
         login_success_popup = self.driver.find_element_by_id("swal2-content")
         self.assertTrue(login_success_popup.is_displayed())
-        self.assertEqual("Welcome Back, Captain Amazo!", login_success_popup.text)
+        self.assertEqual("Welcome Back, Cyborg Rorschach!", login_success_popup.text)
         
     
     # --- Post - Condition (Tear Down) ---
