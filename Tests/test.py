@@ -69,12 +69,14 @@ class BrickDashboard(unittest.TestCase):
         
         address_field = self.driver.find_element_by_id('address')
         address_field.send_keys(self.signup_address)
-        
+
+        a = self.password_randomizer()
+
         password_field = self.driver.find_element_by_id('password')
-        password_field.send_keys(self.password_randomizer())
+        password_field.send_keys(a)
         
         confirm_password_field = self.driver.find_element_by_id('confirm_password')
-        confirm_password_field.send_keys(self.password_randomizer())
+        confirm_password_field.send_keys(a)
         
         register_button = self.driver.find_element_by_css_selector('#myform > div.form-row-last > input')
         register_button.click()
